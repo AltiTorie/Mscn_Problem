@@ -1,0 +1,8 @@
+#pragma once
+#define NOTHING_CHANGED 0;
+#define INCORRECT_VALUE -1;
+#define FILE_COULD_NOT_BE_OPPENED -2;
+#define NULL_ARRAY -3;
+#define INVALID_ARRAY_BOUNDARIES -4;
+#define INVALID_OFFSET -5;
+#define INVALID_SEPARATOR -6;
