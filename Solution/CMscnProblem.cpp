@@ -76,7 +76,7 @@ CMscnProblem::~CMscnProblem()
 
 void CMscnProblem::setDelivererCount(int count, int & errCode)
 {
-	errCode = 1;
+	
 	if (count <= 0) {
 		errCode = INCORRECT_VALUE;
 	}
@@ -89,7 +89,7 @@ void CMscnProblem::setDelivererCount(int count, int & errCode)
 		sd->changeSize(count, errCode);
 		cdf->changeSizeX(count, errCode);
 		ud->changeSize(count, errCode);
-		xdminmax->changeSizeX(count, errCode);
+		xdminmax->changeSizeX(2*count, errCode);
 		xdf->changeSizeX(count, errCode);
 		//
 		deliverer = count;
@@ -100,7 +100,6 @@ void CMscnProblem::setDelivererCount(int count, int & errCode)
 
 void CMscnProblem::setFactoryCount(int count, int & errCode)
 {
-	errCode = 1;
 	if (count <= 0) {
 		errCode = INCORRECT_VALUE;
 	}
@@ -115,7 +114,7 @@ void CMscnProblem::setFactoryCount(int count, int & errCode)
 		cfm->changeSizeX(count, errCode);
 		uf->changeSize(count, errCode);
 		xdminmax->changeSizeY(count, errCode);
-		xfminmax->changeSizeX(count, errCode);
+		xfminmax->changeSizeX(2*count, errCode);
 		xdf->changeSizeY(count, errCode);
 		xfm->changeSizeX(count, errCode);
 		//
@@ -125,7 +124,7 @@ void CMscnProblem::setFactoryCount(int count, int & errCode)
 
 void CMscnProblem::setMagazineCount(int count, int & errCode)
 {
-	errCode = 0;
+	
 	if (count <= 0) {
 		errCode = INCORRECT_VALUE;
 	}
@@ -134,22 +133,12 @@ void CMscnProblem::setMagazineCount(int count, int & errCode)
 	}
 	else {
 		//better version
-		/*double *tempStrength_m = new double[count];
-		double **tempCost_ms = new double*[count];
-		double *tempOneTimeCost_m = new double[count];
-		double **tempXmm_m = new double*[2 * count];
-
-		double **tempCost_fm = new double*[factory];
-		double **tempXmm_f = new double*[2 * factory];
-
-		double **tempx_fm = new double*[factory];
-		double **tempx_ms = new double*[count];*/
 
 		sm->changeSize(count,errCode);
 		cms->changeSizeX(count, errCode);
 		cfm->changeSizeY(count, errCode);
 		um->changeSize(count, errCode);
-		xmminmax->changeSizeX(count, errCode);
+		xmminmax->changeSizeX(2*count, errCode);
 		xfminmax->changeSizeY(count, errCode);
 		xms->changeSizeX(count, errCode);
 		xfm->changeSizeY(count, errCode);
@@ -172,12 +161,6 @@ void CMscnProblem::setShopCount(int count, int & errCode)
 		
 
 		//better version
-
-		/*double *tempStrength_s = new double[count];
-		double **tempCost_ms = new double*[magazine];
-		double *tempPrice_s = new double[count];
-		double **tempXmm_m = new double*[2 * magazine];
-		double **tempx_ms = new double*[magazine];*/
 
 		ss->changeSize(count, errCode);
 		cms->changeSizeY(count, errCode);
@@ -421,7 +404,6 @@ void CMscnProblem::getInfoFromFile(int &errCode)
 	char SolutionFile[] = "plikRozwiazania2.txt";
 
 	char name[256];
-	char semicolon;
 	char test[] = ";";
 
 	double number;
@@ -620,9 +602,9 @@ void CMscnProblem::getInfoFromFile(int &errCode)
 	else {
 		errCode = FILE_COULD_NOT_BE_OPPENED;
 	}
-	if (!isInRange(makeSolution())) {
+	/*if (!isInRange(makeSolution())) {
 		errCode = INCORRECT_VALUE;
-	}
+	}*/
 }
 void CMscnProblem::putInfoToFile(int & errCode)
 {
@@ -736,85 +718,6 @@ double CMscnProblem::getMin(double * pdSolution, int index)
 */
 
 
-/*
-void CMscnProblem::printAll()
-{
-	std::cout << "D " << deliverer << "\n";
-	std::cout << "F " << factory << "\n";
-	std::cout << "M " << magazine << "\n";
-	std::cout << "S " << shop << "\n";
-	std::cout << "sd ";
-	printTab(strength_d);
-	std::cout << "\n";
-	std::cout << "sf ";
-	printTab(strength_f);
-	std::cout << "\n";
-	std::cout << "sm ";
-	printTab(strength_m);
-	std::cout << "\n";
-	std::cout << "ss ";
-	printTab(strength_s);
-	std::cout << "\n";
-
-	std::cout << "cd ";
-	printDoubletab(cost_df);
-	std::cout << "\n";
-	std::cout << "cf ";
-	printDoubletab(cost_fm);
-	std::cout << "\n";
-	std::cout << "cm ";
-	printDoubletab(cost_ms);
-	std::cout << "\n";
-
-	std::cout << "ud ";
-	printTab(oneTimeCost_d);
-	std::cout << "\n";
-	std::cout << "uf ";
-	printTab(oneTimeCost_f);
-	std::cout << "\n";
-	std::cout << "um ";
-	printTab(oneTimeCost_m);
-	std::cout << "\n";
-	std::cout << "p ";
-	printTab(price_s);
-	std::cout << "\n";
-
-	std::cout << "xdminmax ";
-	printDoubletab(xmm_d);
-	std::cout << "\n";
-	std::cout << "xfminmax ";
-	printDoubletab(xmm_f);
-	std::cout << "\n";
-	std::cout << "xmminmax ";
-	printDoubletab(xmm_m);
-	std::cout << "\n";
-}
-
-void CMscnProblem::printTab(double * tab)
-{
-	std::cout << "[";
-	//std::cout << "WITAM: " << sizeof(double);
-	for (int i = 0; i < (sizeof(tab) / sizeof(double)); i++) {
-		std::cout << tab[i] << "|";
-	}
-	std::cout << "]";
-}
-
-void CMscnProblem::printDoubletab(double ** tab)
-{
-	std::cout << "{";
-	for (int i = 0; i < (sizeof(tab) / sizeof(double)); i++) {
-		std::cout << "[";
-		for (int j = 0; j < (sizeof(*tab) / sizeof(int)); j++) {
-			std::cout << tab[i][j] << "|";
-		}
-		std::cout << "]";
-		//std::cout << "\n";
-	}
-	std::cout << "}";
-}
-*/
-
 double* CMscnProblem::makeSolution()
 {
 	int err = 0;
@@ -825,7 +728,6 @@ double* CMscnProblem::makeSolution()
 	{
 		for (int j = 0; j < F; j++)
 		{
-			//out[index] = x_df[i][j];
 			out[index] = (xdf->get(i,j,err));
 			index++;
 		}
@@ -834,7 +736,6 @@ double* CMscnProblem::makeSolution()
 	{
 		for (int j = 0; j < M; j++)
 		{
-			//out[index] = x_fm[i][j];
 			out[index] = (xfm->get(i, j, err));
 			index++;
 
@@ -844,7 +745,6 @@ double* CMscnProblem::makeSolution()
 	{
 		for (int j = 0; j < S; j++)
 		{
-			//out[index] = x_ms[i][j];
 			out[index] = (xms->get(i, j, err));
 			index++;
 

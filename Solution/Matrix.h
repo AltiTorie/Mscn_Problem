@@ -27,6 +27,9 @@ private:
 template<typename T>
 inline Matrix<T>::Matrix()
 {
+	table = new T*[1];
+	table[0] = new T[1];
+
 }
 
 template<typename T>
@@ -36,6 +39,12 @@ inline Matrix<T>::Matrix(int _sizeX, int _sizeY)
 		table = new T*[_sizeX];
 		for (int i = 0; i < _sizeX; i++) {
 			table[i] = new T[_sizeY];
+		}
+
+		for (int i = 0; i < _sizeX; i++) {
+			for (int j = 0; j < _sizeY; j++) {
+				table[i][j] = NULL;
+			}
 		}
 		sizeX = _sizeX;
 		sizeY = _sizeY;
@@ -71,12 +80,11 @@ inline void Matrix<T>::changeSizeX(int _newSizeX, int& errCode)
 		}
 		for (int i = stopper; i < _newSizeX; i++) {
 			tempTab[i] = new T[sizeY];
+			
 		}
-		//delete elements of original tab
-		for (int i = 0; i < sizeX; i++) {
-			delete table[i];
-		}
-
+		
+		delete table;
+		
 		table = tempTab;
 
 		sizeX = _newSizeX;
@@ -110,12 +118,11 @@ inline void Matrix<T>::changeSizeY(int _newSizeY, int& errCode)
 			}
 		}
 		
-		//delete elements of original tab
-		
 		for (int i = 0; i < sizeX; i++) {
-			
-			delete[] table[i];
+			delete table[i];
 		}
+
+		delete table;
 
 		table = tempTab;
 
