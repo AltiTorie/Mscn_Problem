@@ -2,6 +2,7 @@
 #include "ErrorCodes.h"
 #include "Matrix.h"
 #include "Array.h"
+#include "CRandom.h"
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -18,23 +19,27 @@ public:
 	void setMagazineCount(int count, int& errCode);
 	void setShopCount(int count, int& errCode);
 
-
 	double dGetQuality(double *pdSolution, int&errCode);
-	//double *pdSolution, int& errorCode
 	bool bConstraintsSatisfied(double *pdSolution, int& errCode);
 	bool isInRange(double *tab);
 
-	//double getMin(double *pdSolution, int index);
+	void generateInstance(int instanceSeed);
+	void generateSolution(int instanceSeed);
+
+	double getMin(double *pdSolution, int index);
+	double getMax(double *pdSolution, int index);
+
+	
+	double* makeSolution();
+
+	int ddd() { return deliverer; }
+	int dd() { return D; }
 
 	void getInfoFromFile(int &errCode);
 	void putInfoToFile(int &errCode);
 
-	double* makeSolution();
-
-	//void printAll();
-	//void printTab(double *tab);
-	//void printDoubletab(double **tab);
-
+	void printValues();
+	void printSolution();
 
 private:
 	int deliverer;
@@ -62,8 +67,6 @@ private:
 	Matrix<double> *xfminmax;
 	Matrix<double> *xmminmax;
 
-
-
 	//solution values
 	int D;
 	int F;
@@ -73,7 +76,5 @@ private:
 	Matrix<double>*xdf;
 	Matrix<double>*xfm;
 	Matrix<double>*xms;
-
-
 };
 

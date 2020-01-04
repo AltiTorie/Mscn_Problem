@@ -1,10 +1,11 @@
 #pragma once
 #include "ErrorCodes.h"
+#include <iostream>
 
 template <typename T>class Array {
 
 public:
-	Array();
+	Array(){ table = new T[1]; size = 1; };
 	Array(int _size) { table = new T[_size]; size = _size;}
 	~Array() { delete table; }
 
@@ -12,6 +13,8 @@ public:
 	void setAt(int _offset, T value, int& errCode);
 	int getSize() { return size; }
 	T get(int _offset, int& errCode);
+
+	void print();
 
 private:
 	int size;
@@ -35,9 +38,7 @@ inline void Array<T>::changeSize(int _newSize, int & errCode)
 		for (int i = 0; i < stopper; i++) {
 			tempTab[i] = table[i];
 		}
-		/*for (int i = stopper; i < _newSize; i++) {
-			tempTab[i] = new T;
-		}*/
+		delete table;
 		table = tempTab;
 
 		size = _newSize;
@@ -64,4 +65,14 @@ inline T Array<T>::get(int _offset, int & errCode)
 		return NULL;
 	}
 	return table[_offset];
+}
+
+template<typename T>
+inline void Array<T>::print()
+{
+	std::cout << "[";
+	for (int i = 0; i < size; i++) {
+		std::cout << table[i] <<",";
+	}
+	std::cout << "]\n";
 }

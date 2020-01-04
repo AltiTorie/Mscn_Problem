@@ -14,6 +14,7 @@ public:
 	void setAt(int _xOffset, int _yOffset, T value, int& errCode);
 	int getSizeX() { return sizeX; }
 	int getSizeY() { return sizeY; }
+	void print();
 
 	T get(int _xOffset, int _yOffset, int& errCode);
 
@@ -80,11 +81,11 @@ inline void Matrix<T>::changeSizeX(int _newSizeX, int& errCode)
 		}
 		for (int i = stopper; i < _newSizeX; i++) {
 			tempTab[i] = new T[sizeY];
-			
+
 		}
-		
+
 		delete table;
-		
+
 		table = tempTab;
 
 		sizeX = _newSizeX;
@@ -117,7 +118,7 @@ inline void Matrix<T>::changeSizeY(int _newSizeY, int& errCode)
 				tempTab[i][j] = table[i][j];
 			}
 		}
-		
+
 		for (int i = 0; i < sizeX; i++) {
 			delete table[i];
 		}
@@ -140,6 +141,19 @@ inline void Matrix<T>::setAt(int _xOffset, int _yOffset, T value, int & errCode)
 	}
 	else {
 		table[_xOffset][_yOffset] = value;
+	}
+}
+
+template<typename T>
+inline void Matrix<T>::print()
+{
+	for (int i = 0; i < sizeX; i++)
+	{
+		std::cout << "|[";
+		for (int j = 0; j < sizeY; j++) {
+			std::cout << table[i][j] << ",";
+		}
+		std::cout << "]|\n";
 	}
 }
 

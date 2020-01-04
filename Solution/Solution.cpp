@@ -1,16 +1,11 @@
 ﻿#include "pch.h"
 #include "CMscnProblem.h"
+#include "CRandom.h"
 #include "Matrix.h"
+
 #include <iostream>
-
-//TODO
-/**
-Dodać obsluge macierzy
-klase do wczytywania/zapisywania
-
-
-
-*/
+#include <ctime>
+#include <time.h>
 
 
 //testing
@@ -18,17 +13,39 @@ int main()
 {
 	
 	int f = 0;
-	CMscnProblem a(1,1,1,1);
+	CMscnProblem a(4,5,3,6);
 
-	a.getInfoFromFile(f);
-	std::cout << "ERRCODE: " << f <<"\n";
+	//a.getInfoFromFile(f);
+	
+	/*std::cout << "\n_________________________________________\n";
+	a.printValues();
+	std::cout << "\n_________________________________________\n";
+	a.printSolution();
+	std::cout << "\n_________________________________________\n";
+	std::cout << "ERRCODE: " << f << "\n";*/
+	int seed = 0;
+	a.generateInstance(seed);
+
+	a.generateSolution(seed);
 	double *sss = a.makeSolution();
 
-	std::cout << "INRANGE: " << a.isInRange(sss) << "\n";
-	std::cout << "CONSTRAINTS: " << a.bConstraintsSatisfied(sss, f) <<"\n";
-	std::cout << "Solution Quality = "<<a.dGetQuality(sss,f)<<"\n";
+	int q = a.dGetQuality(sss, f);
+
+	for (int i = 1; i < 1000; i++) {
+		a.generateSolution(i);
+		sss = a.makeSolution();
+		int tq = a.dGetQuality(sss, f);
+		q = q < tq ? tq : q;
+		std::cout << tq << " \n";
+	}
+
+	/*std::cout << "INRANGE: " << a.isInRange(sss) << "\n";
+	std::cout << "CONSTRAINTS: " << a.bConstraintsSatisfied(sss, f) << "\n";*/
+	std::cout << "Best Solution Quality = " << q << "\n";
+
 	a.putInfoToFile(f);
 	
+
 
 }
 
@@ -46,19 +63,19 @@ ss<liczbaS wartosci> - zapotrzebowanie sklepu
 cd<macierz[d*f]> - koszt wytworzenia i przewiezienia surowca od dostawcy d do fabryki f
 cf<macierz[f*m]> - koszt wyprodukowania produktu w fabryce f i przewiezienia go do magazynu m
 cm<macierz[m*s]> - koszt przechowania produktu w magazynie m i przewiezienia go do sklepu s
-ud<liczbaD wartosci> - jednorazowy koszt korzystania z usług dostawcy d 
+ud<liczbaD wartosci> - jednorazowy koszt korzystania z usług dostawcy d
 uf<liczbaF wartosci> - jednorazowy koszt korzystania z fabryki f
 um<liczbaM wartosci> - jednorazowy koszt korzystania z magazynu m
-ps<liczbaS wartosci> - Sprzedanie (dostarczenie) produktu w sklepie s, daje przychód p	
-xdminmax<2*liczbaD*liczbaF wartości> - minimalna i maksymalna możliwa ilość surowca do wysłania(ile f może zamowic)
-xfminmax<2*liczbaF*liczbaM wartości> - minimalna i maksymalna możliwa ilość produktów do wysłania(ile m może zamowic)
-xmminmax<2*liczbaM*liczbaS wartości> - minimalna i maksymalna mozliwa ilość produktów do wysłania(ile s może zamowic)
+ps<liczbaS wartosci> - Sprzedanie (dostarczenie) produktu w sklepie s, daje przychód p
+xdminmax<liczbaD*2*liczbaF wartości> - minimalna i maksymalna możliwa ilość surowca do wysłania(ile f może zamowic)
+xfminmax<liczbaF*2*liczbaM wartości> - minimalna i maksymalna możliwa ilość produktów do wysłania(ile m może zamowic)
+xmminmax<liczbaM*2*liczbaS wartości> - minimalna i maksymalna mozliwa ilość produktów do wysłania(ile s może zamowic)
 ___________________________________________________________________________________________________
 ROZWIĄZANIE:
-D<liczbaD> - 
-F<liczbaF> - 
-M<liczbaM> - 
-S<liczbaS> - 
+D<liczbaD> -
+F<liczbaF> -
+M<liczbaM> -
+S<liczbaS> -
 xd<macierz[d*f]> - ilosc towaru wysylana od dostawcy d do fabryki f
 xf<macierz[f*m]> - ilosc towaru wysylana z fabryki f do magazynu m
 xm<macierz[m*s]> - ilosc towaru wysylana z magazynu m do sklepu s
