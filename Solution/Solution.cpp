@@ -11,12 +11,12 @@
 //testing
 int main()
 {
-	
+
 	int f = 0;
-	CMscnProblem a(4,5,3,6);
+	CMscnProblem a(4, 5, 3, 6);
 
 	//a.getInfoFromFile(f);
-	
+
 	/*std::cout << "\n_________________________________________\n";
 	a.printValues();
 	std::cout << "\n_________________________________________\n";
@@ -28,23 +28,23 @@ int main()
 
 	a.generateSolution(seed);
 	double *sss = a.makeSolution();
-
+	a.printValues();
 	int q = a.dGetQuality(sss, f);
 
-	for (int i = 1; i < 1000; i++) {
+	/*for (int i = 1; i < 1000; i++) {
 		a.generateSolution(i);
 		sss = a.makeSolution();
 		int tq = a.dGetQuality(sss, f);
 		q = q < tq ? tq : q;
 		std::cout << tq << " \n";
-	}
+	}*/
 
 	/*std::cout << "INRANGE: " << a.isInRange(sss) << "\n";
 	std::cout << "CONSTRAINTS: " << a.bConstraintsSatisfied(sss, f) << "\n";*/
 	std::cout << "Best Solution Quality = " << q << "\n";
 
 	a.putInfoToFile(f);
-	
+
 
 
 }

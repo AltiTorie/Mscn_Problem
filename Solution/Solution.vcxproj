@@ -153,7 +153,9 @@
   <ItemGroup>
     <ClInclude Include="Array.h" />
     <ClInclude Include="CMscnProblem.h" />
+    <ClInclude Include="CMscnValuesBondariesh.h" />
     <ClInclude Include="CRandom.h" />
+    <ClInclude Include="CRandomSearch.h" />
     <ClInclude Include="ErrorCodes.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="pch.h" />

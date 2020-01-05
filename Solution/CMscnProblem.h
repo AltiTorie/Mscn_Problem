@@ -1,5 +1,6 @@
 #pragma once
 #include "ErrorCodes.h"
+#include "CMscnValuesBondariesh.h"
 #include "Matrix.h"
 #include "Array.h"
 #include "CRandom.h"

@@ -16,18 +16,27 @@ public:
 	double getRandomDouble(double lower_bound, double upper_bound);
 
 private:
-	std::random_device rd;
+
 	std::mt19937 *gen;
 };
 
 inline CRandom::CRandom()
 {
+	std::random_device rd;
 	gen = new std::mt19937(rd());
 }
 
 inline CRandom::CRandom(int seed)
 {
-	gen = new std::mt19937(seed);
+	if (seed == 0) 
+	{ 
+		std::random_device rd;
+		gen = new std::mt19937(rd());
+	}
+	else 
+	{
+		gen = new std::mt19937(seed);
+	}
 }
 
 inline CRandom::~CRandom()

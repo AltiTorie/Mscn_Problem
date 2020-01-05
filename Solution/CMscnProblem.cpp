@@ -468,34 +468,41 @@ void CMscnProblem::generateInstance(int instanceSeed)
 	Tylko jakie wartosci?
 
 	I MUSI SATISFY CONSTRAINS
+	
+	*/
 
-	
-	
+	/*
+	sd/sf/sm -  min 100, inaczej sa za male na taki problem
+	ss - min 10 bo jw.
+
 	*/
 	int errCode = 0;
 	CRandom random(instanceSeed);
+	CMscnValuesBoundaries BOUNDS;
 	for (int i = 0; i < sd->getSize(); i++)
 	{
-		sd->setAt(i, random.getRandomInt(), errCode);
+		
+		sd->setAt(i, random.getRandomInt(BOUNDS.MIN_SD_SF_SM,BOUNDS.MAX_SD_SF_SM), errCode);
 	}
 	for (int i = 0; i < sf->getSize(); i++)
 	{
-		sf->setAt(i, random.getRandomInt(), errCode);
+		sf->setAt(i, random.getRandomInt(BOUNDS.MIN_SD_SF_SM, BOUNDS.MAX_SD_SF_SM), errCode);
 	}
 	for (int i = 0; i < sm->getSize(); i++)
 	{
-		sm->setAt(i, random.getRandomInt(), errCode);
+		sm->setAt(i, random.getRandomInt(BOUNDS.MIN_SD_SF_SM, BOUNDS.MAX_SD_SF_SM), errCode);
 	}
 	for (int i = 0; i < ss->getSize(); i++)
 	{
-		ss->setAt(i, random.getRandomInt(), errCode);
+		ss->setAt(i, random.getRandomInt(BOUNDS.MIN_SS, BOUNDS.MAX_SS), errCode);
 	}
 
 	for (int i = 0; i < cdf->getSizeX(); i++)
 	{
 		for (int j = 0; j < cdf->getSizeY(); j++)
 		{
-			cdf->setAt(i, j, random.getRandomInt(), errCode);
+			double wsp = 1 / random.getRandomDouble(1, 10) * BOUNDS.NORMAL_COST * sd->get(i, errCode);
+			cdf->setAt(i, j, BOUNDS.NORMAL_COST * sf->get(j,errCode) * random.getRandomDouble(BOUNDS.MIN_FUEL_COST,BOUNDS.MAX_FUEL_COST) * wsp, errCode);
 		}
 	}
 
@@ -503,14 +510,16 @@ void CMscnProblem::generateInstance(int instanceSeed)
 	{
 		for (int j = 0; j < cfm->getSizeY(); j++)
 		{
-			cfm->setAt(i, j, random.getRandomInt(), errCode);
+			double wsp = 1 / random.getRandomDouble(1, 10) * BOUNDS.NORMAL_COST * sf->get(i, errCode);
+			cfm->setAt(i, j, BOUNDS.NORMAL_COST * sm->get(j, errCode) * random.getRandomDouble(BOUNDS.MIN_FUEL_COST, BOUNDS.MAX_FUEL_COST) * wsp, errCode);
 		}
 	}
 	for (int i = 0; i < cms->getSizeX(); i++)
 	{
 		for (int j = 0; j < cms->getSizeY(); j++)
 		{
-			cms->setAt(i, j, random.getRandomInt(), errCode);
+			double wsp = (1 / random.getRandomDouble(1, 10)) * BOUNDS.NORMAL_COST * sm->get(i, errCode);
+			cms->setAt(i, j, BOUNDS.NORMAL_COST * ss->get(j, errCode) * random.getRandomDouble(BOUNDS.MIN_FUEL_COST, BOUNDS.MAX_FUEL_COST) * wsp, errCode);
 		}
 	}
 
@@ -535,27 +544,24 @@ void CMscnProblem::generateInstance(int instanceSeed)
 	{
 		for (int j = 0; j < xdminmax->getSizeY(); j+=2)
 		{
-			int min = random.getRandomInt();
-			xdminmax->setAt(i, j, min, errCode);
-			xdminmax->setAt(i, j+1, random.getRandomInt(min), errCode);
+			xdminmax->setAt(i, j, BOUNDS.MIN_XD_XF_XM * sd->get(i,errCode), errCode);
+			xdminmax->setAt(i, j+1, BOUNDS.MAX_XD_XF_XM * sd->get(i,errCode), errCode);
 		}
 	}
 	for (int i = 0; i < xfminmax->getSizeX(); i++)
 	{
 		for (int j = 0; j < xfminmax->getSizeY(); j+=2)
 		{
-			int min = random.getRandomInt();
-			xfminmax->setAt(i, j, min, errCode);
-			xfminmax->setAt(i, j+1, random.getRandomInt(min), errCode);
+			xfminmax->setAt(i, j, BOUNDS.MIN_XD_XF_XM * sm->get(i, errCode), errCode);
+			xfminmax->setAt(i, j+1, BOUNDS.MAX_XD_XF_XM * sf->get(i, errCode), errCode);
 		}
 	}
 	for (int i = 0; i < xmminmax->getSizeX(); i++)
 	{
 		for (int j = 0; j < xmminmax->getSizeY(); j+=2)
 		{
-			int min = random.getRandomInt();
-			xmminmax->setAt(i, j, min, errCode);
-			xmminmax->setAt(i, j+1, random.getRandomInt(), errCode);
+			xmminmax->setAt(i, j, BOUNDS.MIN_XD_XF_XM * sm->get(i, errCode), errCode);
+			xmminmax->setAt(i, j+1, BOUNDS.MAX_XD_XF_XM * sm->get(i, errCode), errCode);
 		}
 	}
 	
