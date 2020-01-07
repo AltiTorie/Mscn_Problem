@@ -11,7 +11,7 @@
 class CMscnProblem
 {
 public:
-	CMscnProblem() {};
+	CMscnProblem();
 	CMscnProblem(int D, int F, int M, int S);
 	~CMscnProblem();
 
@@ -20,8 +20,10 @@ public:
 	void setMagazineCount(int count, int& errCode);
 	void setShopCount(int count, int& errCode);
 
-	double dGetQuality(double *pdSolution, int&errCode);
-	bool bConstraintsSatisfied(double *pdSolution, int& errCode);
+	double getQuality(double *pdSolution, int&errCode);
+	double getQuality();
+	bool ConstraintsSatisfied(double *pdSolution, int& errCode);
+	bool ConstraintsSatisfied();
 	bool isInRange(double *tab);
 
 	void generateInstance(int instanceSeed);
@@ -29,12 +31,14 @@ public:
 
 	double getMin(double *pdSolution, int index);
 	double getMax(double *pdSolution, int index);
+	double getAvg(int index);
 
-	
+
 	double* makeSolution();
-
-	int ddd() { return deliverer; }
-	int dd() { return D; }
+	Array<double>* getSolution() { return solution; };
+	double* getSol() { return solution->getTable(); }
+	void setSolutionValueAt(int index, double value);
+	int getSolutionRange() { return D * F + F * M + M * S; }
 
 	void getInfoFromFile(int &errCode);
 	void putInfoToFile(int &errCode);
@@ -77,5 +81,7 @@ private:
 	Matrix<double>*xdf;
 	Matrix<double>*xfm;
 	Matrix<double>*xms;
+
+	Array<double> *solution;
 };
 

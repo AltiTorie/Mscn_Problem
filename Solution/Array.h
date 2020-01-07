@@ -14,6 +14,8 @@ public:
 	int getSize() { return size; }
 	T get(int _offset, int& errCode);
 
+	T* getTable() { return table; }
+
 	void print();
 
 private:

@@ -1,7 +1,9 @@
 ﻿#include "pch.h"
 #include "CMscnProblem.h"
 #include "CRandom.h"
+#include "CRandomSearch.h"
 #include "Matrix.h"
+#include "Timer.h"
 
 #include <iostream>
 #include <ctime>
@@ -13,40 +15,20 @@ int main()
 {
 
 	int f = 0;
-	CMscnProblem a(4, 5, 3, 6);
+	double q = 0;
+	double tq = 0;
+	for (int i = 0; i < 1000; i++) {
+		CMscnProblem *problem = new CMscnProblem(2, 2, 2, 2);
 
-	//a.getInfoFromFile(f);
-
-	/*std::cout << "\n_________________________________________\n";
-	a.printValues();
-	std::cout << "\n_________________________________________\n";
-	a.printSolution();
-	std::cout << "\n_________________________________________\n";
-	std::cout << "ERRCODE: " << f << "\n";*/
-	int seed = 0;
-	a.generateInstance(seed);
-
-	a.generateSolution(seed);
-	double *sss = a.makeSolution();
-	a.printValues();
-	int q = a.dGetQuality(sss, f);
-
-	/*for (int i = 1; i < 1000; i++) {
-		a.generateSolution(i);
-		sss = a.makeSolution();
-		int tq = a.dGetQuality(sss, f);
-		q = q < tq ? tq : q;
-		std::cout << tq << " \n";
-	}*/
-
-	/*std::cout << "INRANGE: " << a.isInRange(sss) << "\n";
-	std::cout << "CONSTRAINTS: " << a.bConstraintsSatisfied(sss, f) << "\n";*/
-	std::cout << "Best Solution Quality = " << q << "\n";
-
-	a.putInfoToFile(f);
-
-
-
+		problem->getInfoFromFile(f);
+		problem->makeSolution();
+		CRandomSearch search(problem);
+		search.searchByImprovementTries(5000);
+		std::cout << "Q: " << i << ": " << problem->getQuality() << "\n";
+		tq = problem->getQuality();
+		q = tq > q ? tq : q;
+	}
+	std::cout << "Best solution: " << q;
 }
 
 /*
