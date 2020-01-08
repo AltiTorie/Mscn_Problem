@@ -18,7 +18,7 @@ public:
 	const int MAX_SS = 500;
 
 	/*
-	cdf/cfm/cms min - 5% * mozliwego przetworzenia dla nizszego stopnia * losowy czynnik "paliwa" * wsp. wielkosci tego stopnia(1/rand(1,10) * 5% s)
+	cdf/cfm/cms min - 5% * mozliwego przetworzenia dla nizszego stopnia * losowy czynnik "paliwa" * wsp. wielkosci tego stopnia(1/rand(1,10))
 	(cdf-sf,cfm-sm,cms-ss)(dla cdf 5/100 * sf * rand * 1/rand(1,10) * 5/100 * sd)
 	*/
 	const double SIZE_FACTOR = 0.05;
@@ -35,8 +35,8 @@ public:
 	*/
 	const double PRICE_FACTOR = 0.1;
 	/*
-	xd/xf/xm min - 1% mozliwego wytworzenia(sd/sf/sm)(dla xd 1/100 * sd)
-	xd/xf/xm max - 25% mozliwego wytworzenia(sd/sf/sm)(dla xd 25/100 * sd)
+	xd/xf/xm min - 10% mozliwego wytworzenia(sd/sf/sm)(dla xd 10/100 * sd)
+	xd/xf/xm max - 50% mozliwego wytworzenia(sd/sf/sm)(dla xd 50/100 * sd)
 	*/
 	const double MIN_XD_XF_XM = 0.1;
 	const double MAX_XD_XF_XM = 0.5;

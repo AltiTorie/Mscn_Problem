@@ -29,14 +29,18 @@ public:
 	void generateInstance(int instanceSeed);
 	void generateSolution(int instanceSeed);
 
+	double* getSolution() {
+		return solution;
+	}
+
 	double getMin(double *pdSolution, int index);
+	double getMin(int index);
 	double getMax(double *pdSolution, int index);
+	double getMax(int index);
 	double getAvg(int index);
 
 
-	double* makeSolution();
-	Array<double>* getSolution() { return solution; };
-	double* getSol() { return solution->getTable(); }
+	void makeSolution();
 	void setSolutionValueAt(int index, double value);
 	int getSolutionRange() { return D * F + F * M + M * S; }
 
@@ -82,6 +86,6 @@ private:
 	Matrix<double>*xfm;
 	Matrix<double>*xms;
 
-	Array<double> *solution;
+	double *solution;
 };
 

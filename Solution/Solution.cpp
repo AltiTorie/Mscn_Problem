@@ -17,14 +17,25 @@ int main()
 	int f = 0;
 	double q = 0;
 	double tq = 0;
-	for (int i = 0; i < 1000; i++) {
-		CMscnProblem *problem = new CMscnProblem(2, 2, 2, 2);
 
-		problem->getInfoFromFile(f);
+	for (int i = 0; i < 1; i++) {
+		CMscnProblem *problem = new CMscnProblem(3,4,5,6);
+
+		//problem->getInfoFromFile(f);
+		problem->generateInstance(0);
+		problem->printValues();
+
+		problem->generateSolution(0);
 		problem->makeSolution();
+		problem->printSolution();
+
+		std::cout << "QB: " << i << ": " << problem->getQuality() << "\n";
 		CRandomSearch search(problem);
-		search.searchByImprovementTries(5000);
-		std::cout << "Q: " << i << ": " << problem->getQuality() << "\n";
+		search.searchByImprovementTriesSolution(10000);
+		//search.tryAll();
+		std::cout << "Solution: ";
+		problem->printSolution();
+		std::cout << "QA: " << i << ": " << problem->getQuality() << "\n";
 		tq = problem->getQuality();
 		q = tq > q ? tq : q;
 	}

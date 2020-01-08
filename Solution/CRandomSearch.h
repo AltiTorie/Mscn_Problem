@@ -13,6 +13,8 @@ public:
 	void generateRandomValues(int seed);
 	void searchByTime(int timeInSeconds);
 	void searchByTries(int tries);
+	void searchByTriesSolution(int tries);
+	void searchByImprovementTriesSolution(int tries);
 	void searchByImprovementTries(int tries);
 
 private:

@@ -50,7 +50,7 @@ CMscnProblem::CMscnProblem(int _D, int _F, int _M, int _S)
 	xfm = new Matrix<double>(factory, magazine);
 	xms = new Matrix<double>(magazine, shop);
 
-	solution = new Array<double>(D*F + F * M + M * S);
+	solution = new double[(D*F + F * M + M * S)];
 	//getInfoFromFile(a);
 }//CMscnProblem::CMscnProblem(int _D, int _F, int _M, int _S)
 
@@ -78,7 +78,7 @@ CMscnProblem::~CMscnProblem()
 	delete xdf;
 	delete xfm;
 	delete xms;
-
+	delete solution;
 
 }//CMscnProblem::~CMscnProblem()
 
@@ -246,6 +246,7 @@ double CMscnProblem::getQuality(double *pdSolution, int &errCode)
 			index++;
 		}
 	}
+	//std::cout << "Koszta transportu: " << KT<<"\n";
 	index = 0;
 	double KU = 0;
 	double helper = 0;
@@ -282,6 +283,7 @@ double CMscnProblem::getQuality(double *pdSolution, int &errCode)
 		}
 		KU += (epsilon(helper) * (um->get(i, errCode)));
 	}
+	//std::cout << "Koszta umow: " << KU << "\n";
 	double P = 0;
 	index = D * F + F * M;
 	for (int i = 0; i < M; i++)
@@ -293,13 +295,14 @@ double CMscnProblem::getQuality(double *pdSolution, int &errCode)
 			index++;
 		}
 	}
+	//std::cout << "Przychod: " << P << "\n";
 	double z = P - KT - KU;
 	return z;
 }
 double CMscnProblem::getQuality()
 {
 	int err = 0;
-	return getQuality(solution->getTable(), err);
+	return getQuality(solution, err);
 }
 //double CMscnProblem::dGetQuality(double *pdSolution, int &errCode)
 
@@ -429,9 +432,8 @@ bool CMscnProblem::ConstraintsSatisfied(double * pdSolution, int & errCode)
 bool CMscnProblem::ConstraintsSatisfied()
 {
 	int err = 0;
-	return ConstraintsSatisfied(solution->getTable(), err);
-}
-//bool CMscnProblem::bConstraintsSatisfied(double * pdSolution, int & errCode)
+	return ConstraintsSatisfied(solution, err);
+}//bool CMscnProblem::bConstraintsSatisfied(double * pdSolution, int & errCode)
 
 bool CMscnProblem::isInRange(double *pdSolution)
 {
@@ -477,19 +479,12 @@ bool CMscnProblem::isInRange(double *pdSolution)
 
 void CMscnProblem::generateInstance(int instanceSeed)
 {
-	/*
-	sf - wielkosc fabryki?
-	koszt wysy³ki - taniej dla wiekszych firm ale
-	jednorazowy koszt - drozej dla wiekszych firm
-	minmaxy - min musi byc mniejszy od maxa 
-
-	*/
 	int errCode = 0;
 	CRandom random(instanceSeed);
 	CMscnValuesBoundaries BOUNDS;
 	for (int i = 0; i < sd->getSize(); i++)
 	{
-		sd->setAt(i, random.getRandomInt(BOUNDS.MIN_SD_SF_SM,BOUNDS.MAX_SD_SF_SM), errCode);
+		sd->setAt(i, random.getRandomInt(BOUNDS.MIN_SD_SF_SM, BOUNDS.MAX_SD_SF_SM), errCode);
 	}
 	for (int i = 0; i < sf->getSize(); i++)
 	{
@@ -508,8 +503,8 @@ void CMscnProblem::generateInstance(int instanceSeed)
 	{
 		for (int j = 0; j < cdf->getSizeY(); j++)
 		{
-			double wsp = (1 / random.getRandomDouble(1, 10)) * (BOUNDS.SIZE_FACTOR * sd->get(i, errCode));
-			cdf->setAt(i, j, BOUNDS.NORMAL_COST * sf->get(j,errCode) * random.getRandomDouble(BOUNDS.MIN_FUEL_COST,BOUNDS.MAX_FUEL_COST) * wsp, errCode);
+			double wsp = (1 / random.getRandomDouble(1, 10));
+			cdf->setAt(i, j, BOUNDS.NORMAL_COST * sf->get(j, errCode) * random.getRandomDouble(BOUNDS.MIN_FUEL_COST, BOUNDS.MAX_FUEL_COST) * wsp, errCode);
 		}
 	}
 
@@ -517,7 +512,7 @@ void CMscnProblem::generateInstance(int instanceSeed)
 	{
 		for (int j = 0; j < cfm->getSizeY(); j++)
 		{
-			double wsp = (1 / random.getRandomDouble(1, 10)) * (BOUNDS.NORMAL_COST * sf->get(i, errCode));
+			double wsp = (1 / random.getRandomDouble(1, 10));
 			cfm->setAt(i, j, BOUNDS.NORMAL_COST * sm->get(j, errCode) * random.getRandomDouble(BOUNDS.MIN_FUEL_COST, BOUNDS.MAX_FUEL_COST) * wsp, errCode);
 		}
 	}
@@ -525,14 +520,14 @@ void CMscnProblem::generateInstance(int instanceSeed)
 	{
 		for (int j = 0; j < cms->getSizeY(); j++)
 		{
-			double wsp = (1 / random.getRandomDouble(1, 10)) * (BOUNDS.NORMAL_COST * sm->get(i, errCode));
+			double wsp = (1 / random.getRandomDouble(1, 10));
 			cms->setAt(i, j, BOUNDS.NORMAL_COST * ss->get(j, errCode) * random.getRandomDouble(BOUNDS.MIN_FUEL_COST, BOUNDS.MAX_FUEL_COST) * wsp, errCode);
 		}
 	}
 
 	for (int i = 0; i < ud->getSize(); i++)
 	{
-		ud->setAt(i, BOUNDS.AGREEMENT_SIZE_FACTOR * sd->get(i,errCode), errCode);
+		ud->setAt(i, BOUNDS.AGREEMENT_SIZE_FACTOR * sd->get(i, errCode), errCode);
 	}
 	for (int i = 0; i < uf->getSize(); i++)
 	{
@@ -544,70 +539,75 @@ void CMscnProblem::generateInstance(int instanceSeed)
 	}
 	for (int i = 0; i < p->getSize(); i++)
 	{
-		p->setAt(i, BOUNDS.PRICE_FACTOR * ss->get(i,errCode), errCode);
+		p->setAt(i, BOUNDS.PRICE_FACTOR * ss->get(i, errCode), errCode);
 	}
 
 	for (int i = 0; i < xdminmax->getSizeX(); i++)
 	{
-		for (int j = 0; j < xdminmax->getSizeY(); j+=2)
+		for (int j = 0; j < xdminmax->getSizeY(); j += 2)
 		{
-			xdminmax->setAt(i, j, BOUNDS.MIN_XD_XF_XM * sd->get(i,errCode), errCode);
-			xdminmax->setAt(i, j+1, BOUNDS.MAX_XD_XF_XM * sd->get(i,errCode), errCode);
+			xdminmax->setAt(i, j, BOUNDS.MIN_XD_XF_XM * sd->get(i, errCode), errCode);
+			xdminmax->setAt(i, j + 1, BOUNDS.MAX_XD_XF_XM * sd->get(i, errCode), errCode);
 		}
 	}
 	for (int i = 0; i < xfminmax->getSizeX(); i++)
 	{
-		for (int j = 0; j < xfminmax->getSizeY(); j+=2)
+		for (int j = 0; j < xfminmax->getSizeY(); j += 2)
 		{
 			xfminmax->setAt(i, j, BOUNDS.MIN_XD_XF_XM * sf->get(i, errCode), errCode);
-			xfminmax->setAt(i, j+1, BOUNDS.MAX_XD_XF_XM * sf->get(i, errCode), errCode);
+			xfminmax->setAt(i, j + 1, BOUNDS.MAX_XD_XF_XM * sf->get(i, errCode), errCode);
 		}
 	}
 	for (int i = 0; i < xmminmax->getSizeX(); i++)
 	{
-		for (int j = 0; j < xmminmax->getSizeY(); j+=2)
+		for (int j = 0; j < xmminmax->getSizeY(); j += 2)
 		{
 			xmminmax->setAt(i, j, BOUNDS.MIN_XD_XF_XM * sm->get(i, errCode), errCode);
-			xmminmax->setAt(i, j+1, BOUNDS.MAX_XD_XF_XM * sm->get(i, errCode), errCode);
+			xmminmax->setAt(i, j + 1, BOUNDS.MAX_XD_XF_XM * sm->get(i, errCode), errCode);
 		}
 	}
-	
+
 }//void CMscnProblem::GenerateInstance(int instanceSeed)
 
 void CMscnProblem::generateSolution(int instanceSeed) {
 	int errCode = 0;
 
 	CRandom random(instanceSeed);
+	do
+	{
+		for (int i = 0; i < xdf->getSizeX(); i++)
+		{
+			for (int j = 0; j < xdf->getSizeY(); j++)
+			{
+				int low = xdminmax->get(i, 2 * j, errCode);
+				int big = xdminmax->get(i, (2 * j) + 1, errCode);
+				xdf->setAt(i, j, random.getRandomInt(low, big), errCode);
 
-	for (int i = 0; i < xdf->getSizeX(); i++)
-	{
-		for (int j = 0; j < xdf->getSizeY(); j++)
-		{
-			int low = xdminmax->get(i, 2 * j, errCode);
-			int big = xdminmax->get(i, (2 * j) + 1, errCode);
-			xdf->setAt(i, j, random.getRandomInt(low, big),errCode);
+			}
 		}
-	}
 
-	for (int i = 0; i < xfm->getSizeX(); i++)
-	{
-		for (int j = 0; j < xfm->getSizeY(); j++)
+		for (int i = 0; i < xfm->getSizeX(); i++)
 		{
-			int low = xfminmax->get(i, 2 * j, errCode);
-			int big = xfminmax->get(i, (2 * j) + 1, errCode);
-			xfm->setAt(i, j, random.getRandomInt(low,big), errCode);
+			for (int j = 0; j < xfm->getSizeY(); j++)
+			{
+				int low = xfminmax->get(i, 2 * j, errCode);
+				int big = xfminmax->get(i, (2 * j) + 1, errCode);
+				xfm->setAt(i, j, random.getRandomInt(low, big), errCode);
+			}
 		}
-	}
-	for (int i = 0; i < xms->getSizeX(); i++)
-	{
-		for (int j = 0; j < xms->getSizeY(); j++)
+		for (int i = 0; i < xms->getSizeX(); i++)
 		{
-			int low = xmminmax->get(i, 2 * j, errCode);
-			int big = xmminmax->get(i, (2 * j) + 1, errCode);
-			xms->setAt(i, j, random.getRandomInt(low,big), errCode);
+			for (int j = 0; j < xms->getSizeY(); j++)
+			{
+				int low = xmminmax->get(i, 2 * j, errCode);
+				int big = xmminmax->get(i, (2 * j) + 1, errCode);
+				xms->setAt(i, j, random.getRandomInt(low, big), errCode);
+			}
 		}
-	}
+		makeSolution();
+	} while (!ConstraintsSatisfied());
 }
+
 
 double CMscnProblem::getMin(double * pdSolution, int index)
 {
@@ -635,6 +635,11 @@ double CMscnProblem::getMin(double * pdSolution, int index)
 	}
 }
 
+double CMscnProblem::getMin(int index)
+{
+	return getMin(solution, index);
+}
+
 double CMscnProblem::getMax(double *pdSolution, int index)
 {
 	int errCode = 0;
@@ -660,6 +665,11 @@ double CMscnProblem::getMax(double *pdSolution, int index)
 	}
 }
 
+double CMscnProblem::getMax(int index)
+{
+	return getMax(solution, index);
+}
+
 double CMscnProblem::getAvg(int index)
 {
 	if (index > D*F + F * M) {
@@ -675,17 +685,17 @@ double CMscnProblem::getAvg(int index)
 
 
 
-double* CMscnProblem::makeSolution()
+void CMscnProblem::makeSolution()
 {
 	int err = 0;
 	delete solution;
-	solution = new Array<double>(D*F + F * M + M * S);
+	solution = new double[D*F + F * M + M * S];
 	int index = 0;
 	for (int i = 0; i < D; i++)
 	{
 		for (int j = 0; j < F; j++)
 		{
-			solution->setAt(index,(xdf->get(i, j, err)),err);
+			solution[index] = xdf->get(i, j, err);
 			index++;
 		}
 	}
@@ -693,7 +703,7 @@ double* CMscnProblem::makeSolution()
 	{
 		for (int j = 0; j < M; j++)
 		{
-			solution->setAt(index, (xfm->get(i, j, err)), err);
+			solution[index] = xfm->get(i, j, err);
 			index++;
 
 		}
@@ -702,17 +712,18 @@ double* CMscnProblem::makeSolution()
 	{
 		for (int j = 0; j < S; j++)
 		{
-			solution->setAt(index, (xms->get(i, j, err)), err);
+			solution[index] = xms->get(i, j, err);
 			index++;
 
 		}
 	}
-	return solution->getTable();
+
 }
 void CMscnProblem::setSolutionValueAt(int index, double value)
 {
-	int errCode = 0;
-	solution->setAt(index, value, errCode);
+	if (index < getSolutionRange() && index >= 0) {
+		solution[index] = value;
+	}
 }
 //double* CMscnProblem::makeSolution()
 
@@ -973,7 +984,7 @@ void CMscnProblem::putInfoToFile(int & errCode)
 
 }
 
-void CMscnProblem::printValues() 
+void CMscnProblem::printValues()
 {
 	std::cout << "sd: \n";
 	sd->print();
@@ -1007,5 +1018,9 @@ void CMscnProblem::printValues()
 
 void CMscnProblem::printSolution()
 {
-	solution->print();
+	std::cout << "[";
+	for (int i = 0; i < D*F + F * M + M * S; i++) {
+		std::cout << solution[i] << " ";
+	}
+	std::cout << "]";
 }
