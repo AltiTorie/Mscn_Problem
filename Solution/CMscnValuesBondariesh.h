@@ -35,11 +35,13 @@ public:
 	*/
 	const double PRICE_FACTOR = 0.1;
 	/*
-	xd/xf/xm min - 10% mozliwego wytworzenia(sd/sf/sm)(dla xd 10/100 * sd)
-	xd/xf/xm max - 50% mozliwego wytworzenia(sd/sf/sm)(dla xd 50/100 * sd)
+	xd/xf/xm min - 2% mozliwego wytworzenia(sd/sf/sm)(dla xd 2/100 * sd)
+	
 	*/
-	const double MIN_XD_XF_XM = 0.1;
-	const double MAX_XD_XF_XM = 0.5;
+	const double MIN_XD_XF_XM = 0.02;
+	const double MAX_XD = 0.7;
+	const double MAX_XF = 0.6;
+	const double MAX_XM = 0.5;
 
 
 };

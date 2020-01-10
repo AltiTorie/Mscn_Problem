@@ -321,11 +321,12 @@ bool CMscnProblem::ConstraintsSatisfied(double * pdSolution, int & errCode)
 		}
 		if (sumHelper > sd->get(i, errCode))
 		{
+			//std::cout << "\n";
 			return false;
 		}
 		sumHelper = 0;
 	}
-
+	//std::cout << "1";
 	//Sumaryczna iloœæ produktów zamówiona w danej fabryce nie mo¿e przekroczyæ jej
 	//mocy produkcyjnych sf
 	sumHelper = 0;
@@ -338,10 +339,12 @@ bool CMscnProblem::ConstraintsSatisfied(double * pdSolution, int & errCode)
 		}
 		if (sumHelper > sf->get(i, errCode))
 		{
+			//std::cout << "\n";
 			return false;
 		}
 		sumHelper = 0;
 	}
+	//std::cout << "2";
 	//Sumaryczna iloœæ produktów zamówiona pobierana z danego magazynu nie mo¿e
 	//	przekroczyæ jego pojemnoœci sm
 	sumHelper = 0;
@@ -354,27 +357,32 @@ bool CMscnProblem::ConstraintsSatisfied(double * pdSolution, int & errCode)
 		}
 		if (sumHelper > sm->get(i, errCode))
 		{
+			//std::cout << "\n";
 			return false;
 		}
 		sumHelper = 0;
 	}
+	//std::cout << "3";
 	//Sumaryczna iloœæ produktów dostarczana do danego sklepu nie mo¿e przekroczyæ
 	//zapotrzebowania rynkowego dla tego sklepu ss
 	index = D * F + M * F;
 	sumHelper = 0;
 	for (int i = 0; i < S; i++)
 	{
+		index = (D * F + M * F) + i;
 		for (int j = 0; j < M; j++)
 		{
 			sumHelper += pdSolution[index];
-			index++;
+			index+=S;
 		}
 		if (sumHelper > ss->get(i, errCode))
 		{
+			//std::cout << "\n";
 			return false;
 		}
 		sumHelper = 0;
 	}
+	//std::cout << "4";
 	//Suma surowców od dostawców wchodz¹cych do jednej fabryki f, nie
 	//mo¿e byæ mniejsza ni¿ suma produktów wychodz¹cych z tej fabryki f
 	index = 0;
@@ -398,8 +406,10 @@ bool CMscnProblem::ConstraintsSatisfied(double * pdSolution, int & errCode)
 	}
 	if (secondSum > sumHelper)
 	{
+		//std::cout << "\n";
 		return false;
 	}
+	//std::cout << "5";
 	//Suma wszystkich produktów dostarczanych do jednego centrum
 	//dystrybucyjnego m nie mo¿e byæ mniejsza ni¿ suma wszystkich produktów
 	//dostarczanych z tego centrum dystrybucyjnego m do sklepów.
@@ -424,9 +434,10 @@ bool CMscnProblem::ConstraintsSatisfied(double * pdSolution, int & errCode)
 	}
 	if (secondSum > sumHelper)
 	{
+		//std::cout << "\n";
 		return false;
 	}
-
+	//std::cout << "6";
 	return true;
 }
 bool CMscnProblem::ConstraintsSatisfied()
@@ -541,29 +552,36 @@ void CMscnProblem::generateInstance(int instanceSeed)
 	{
 		p->setAt(i, BOUNDS.PRICE_FACTOR * ss->get(i, errCode), errCode);
 	}
-
+	double min = 0;
+	double max = 0;
 	for (int i = 0; i < xdminmax->getSizeX(); i++)
 	{
 		for (int j = 0; j < xdminmax->getSizeY(); j += 2)
 		{
-			xdminmax->setAt(i, j, BOUNDS.MIN_XD_XF_XM * sd->get(i, errCode), errCode);
-			xdminmax->setAt(i, j + 1, BOUNDS.MAX_XD_XF_XM * sd->get(i, errCode), errCode);
+			min = BOUNDS.MIN_XD_XF_XM * sd->get(i, errCode);
+			max = (BOUNDS.MAX_XD * sd->get(i, errCode)) / F;
+			xdminmax->setAt(i, j, min, errCode);
+			xdminmax->setAt(i, j + 1, max, errCode);
 		}
 	}
 	for (int i = 0; i < xfminmax->getSizeX(); i++)
 	{
 		for (int j = 0; j < xfminmax->getSizeY(); j += 2)
 		{
-			xfminmax->setAt(i, j, BOUNDS.MIN_XD_XF_XM * sf->get(i, errCode), errCode);
-			xfminmax->setAt(i, j + 1, BOUNDS.MAX_XD_XF_XM * sf->get(i, errCode), errCode);
+			min = BOUNDS.MIN_XD_XF_XM * sf->get(i, errCode);
+			max = (BOUNDS.MAX_XF * sf->get(i, errCode)) / M;
+			xfminmax->setAt(i, j, min, errCode);
+			xfminmax->setAt(i, j + 1, max, errCode);
 		}
 	}
 	for (int i = 0; i < xmminmax->getSizeX(); i++)
 	{
 		for (int j = 0; j < xmminmax->getSizeY(); j += 2)
 		{
-			xmminmax->setAt(i, j, BOUNDS.MIN_XD_XF_XM * sm->get(i, errCode), errCode);
-			xmminmax->setAt(i, j + 1, BOUNDS.MAX_XD_XF_XM * sm->get(i, errCode), errCode);
+			min = BOUNDS.MIN_XD_XF_XM * sm->get(i, errCode);
+			max = (BOUNDS.MAX_XM * sm->get(i, errCode)) / S;
+			xmminmax->setAt(i, j, min, errCode);
+			xmminmax->setAt(i, j + 1, max, errCode);
 		}
 	}
 
@@ -573,7 +591,7 @@ void CMscnProblem::generateSolution(int instanceSeed) {
 	int errCode = 0;
 
 	CRandom random(instanceSeed);
-	do
+	
 	{
 		for (int i = 0; i < xdf->getSizeX(); i++)
 		{
@@ -582,7 +600,6 @@ void CMscnProblem::generateSolution(int instanceSeed) {
 				int low = xdminmax->get(i, 2 * j, errCode);
 				int big = xdminmax->get(i, (2 * j) + 1, errCode);
 				xdf->setAt(i, j, random.getRandomInt(low, big), errCode);
-
 			}
 		}
 
@@ -605,7 +622,8 @@ void CMscnProblem::generateSolution(int instanceSeed) {
 			}
 		}
 		makeSolution();
-	} while (!ConstraintsSatisfied());
+	}
+	//std::cout << "Generated!" << "\n";
 }
 
 
@@ -717,7 +735,6 @@ void CMscnProblem::makeSolution()
 
 		}
 	}
-
 }
 void CMscnProblem::setSolutionValueAt(int index, double value)
 {

@@ -15,31 +15,40 @@ int main()
 {
 
 	int f = 0;
-	double q = 0;
 	double tq = 0;
 
 	for (int i = 0; i < 1; i++) {
-		CMscnProblem *problem = new CMscnProblem(3,4,5,6);
+		CMscnProblem *problem = new CMscnProblem(2,3,4,6);
 
 		//problem->getInfoFromFile(f);
-		problem->generateInstance(0);
+		problem->generateInstance(5);
 		problem->printValues();
 
 		problem->generateSolution(0);
 		problem->makeSolution();
 		problem->printSolution();
-
-		std::cout << "QB: " << i << ": " << problem->getQuality() << "\n";
+		double fq = problem->getQuality();
+		tq = problem->getQuality();
+		std::cout << "\nQuality Before: " << problem->getQuality() << "\n";
+		std::cout << "Constraints Before: " << problem->ConstraintsSatisfied() << "\n";
 		CRandomSearch search(problem);
-		search.searchByImprovementTriesSolution(10000);
-		//search.tryAll();
+		
+		search.searchByTriesSolution(1000000);
+		std::cout << "Quality Solution: " << problem->getQuality() << "\n";
+		std::cout << "Constraints: " << problem->ConstraintsSatisfied() << "\n";
+		search.searchByTriesRandomCount(1000000);
+		std::cout << "Quality RandomCount: " << problem->getQuality() << "\n";
+		std::cout << "Constraints: " << problem->ConstraintsSatisfied() << "\n";
+		search.searchByTriesOneValue(1000000);
+		std::cout << "Quality Single: " << problem->getQuality() << "\n";
+		std::cout << "Constraints: " << problem->ConstraintsSatisfied() << "\n";
+
+		tq = problem->getQuality();
+
 		std::cout << "Solution: ";
 		problem->printSolution();
-		std::cout << "QA: " << i << ": " << problem->getQuality() << "\n";
-		tq = problem->getQuality();
-		q = tq > q ? tq : q;
 	}
-	std::cout << "Best solution: " << q;
+	//std::cout << "Best solution: " << q;
 }
 
 /*

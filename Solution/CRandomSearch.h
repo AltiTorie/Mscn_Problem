@@ -9,17 +9,34 @@ public:
 	CRandomSearch();
 	CRandomSearch(CMscnProblem* problem);
 	~CRandomSearch() { delete problem; }
-	void getValuesFromFile(int &errCode);
-	void generateRandomValues(int seed);
-	void searchByTime(int timeInSeconds);
-	void searchByTries(int tries);
+	//losuje tylko pojedyncze wartosci z solution
+	void searchByTimeOneValue(int timeInSeconds);
+	void searchByTriesOneValue(int tries);
+	void searchByImprovedTriesOneValue(int tries);
+
+
+	//Losuje losowa ilosc liczb ktore maja zostac wygenerowane losowo
+	void searchByTimeRandomCount(int timeInSeconds);
+	void searchByTriesRandomCount(int tries);
+	void searchByImprovedTriesRandomCount(int tries);
+	
+	//losuje cale solution losowe
+	void searchByTimeSolution(int timeInSeconds);
 	void searchByTriesSolution(int tries);
-	void searchByImprovementTriesSolution(int tries);
-	void searchByImprovementTries(int tries);
+	void searchByImprovedTriesSolution(int tries);
 
 private:
-	double searchNewValue(int &newIndex, double& newValue);
+
+	bool oneValueSearch();
+	bool findRandomCountValues();
+	bool findNewSolution();
+
+	void getNewValue(int &newIndex, double& newValue);
+
 	CMscnProblem *problem;
+	CRandom random;
+
+	int errorFlag = 0;
 };
 
 
