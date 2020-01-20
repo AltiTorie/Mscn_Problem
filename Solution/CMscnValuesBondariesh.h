@@ -14,8 +14,8 @@ public:
 	const int MIN_SD_SF_SM = 100;
 	const int MAX_SD_SF_SM = 1000;
 
-	const int MIN_SS = 10;
-	const int MAX_SS = 500;
+	const int MIN_SS = 500;
+	const int MAX_SS = 1000;
 
 	/*
 	cdf/cfm/cms min - 5% * mozliwego przetworzenia dla nizszego stopnia * losowy czynnik "paliwa" * wsp. wielkosci tego stopnia(1/rand(1,10))
@@ -36,12 +36,11 @@ public:
 	const double PRICE_FACTOR = 0.1;
 	/*
 	xd/xf/xm min - 2% mozliwego wytworzenia(sd/sf/sm)(dla xd 2/100 * sd)
-	
 	*/
 	const double MIN_XD_XF_XM = 0.02;
 	const double MAX_XD = 0.7;
-	const double MAX_XF = 0.6;
-	const double MAX_XM = 0.5;
+	const double MAX_XF = 0.4;
+	const double MAX_XM = 0.4;
 
 
 };

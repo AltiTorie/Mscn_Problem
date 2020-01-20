@@ -4,11 +4,12 @@
 #include "Matrix.h"
 #include "Array.h"
 #include "CRandom.h"
+#include "CProblem.h"
 #include <string>
 #include <fstream>
 #include <iostream>
 
-class CMscnProblem
+class CMscnProblem :public CProblem
 {
 public:
 	CMscnProblem();
@@ -29,13 +30,12 @@ public:
 	void generateInstance(int instanceSeed);
 	void generateSolution(int instanceSeed);
 
-	double* getSolution() {
-		return solution;
-	}
+	double* generateSolutionArray(int instanceSeed);
 
-	double getMin(double *pdSolution, int index);
+	double* getSolution() { return solution; }
+	void setSolution(double* table) { solution = table; }
+
 	double getMin(int index);
-	double getMax(double *pdSolution, int index);
 	double getMax(int index);
 	double getAvg(int index);
 
@@ -51,6 +51,9 @@ public:
 	void printSolution();
 
 private:
+	int failedConstraints = 1;
+
+
 	int deliverer;
 	int factory;
 	int magazine;

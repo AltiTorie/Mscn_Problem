@@ -4,53 +4,34 @@
 #include "CRandomSearch.h"
 #include "Matrix.h"
 #include "Timer.h"
+#include "CDiffEvol.h"
 
 #include <iostream>
 #include <ctime>
-#include <time.h>
 
 
-//testing
+
 int main()
 {
+	int errCode = 0;
+	int D = 2;
+	int F = 3;
+	int M = 4;
+	int S = 6;
+	double cross = 0.88;
+	double diffWeight = 0.25;
+	int populationSize = 100;
+	CMscnProblem *problem = new CMscnProblem(D, F, M, S);
+	problem->getInfoFromFile(errCode);
+	problem->generateSolution(0);
+	CDiffEvol DE(problem, populationSize, cross, diffWeight, 15);
+	std::cout << "Simulating...\n";
+	problem->setSolution(DE.simulate());
+	problem->printSolution();
+	std::cout << "Quality: " << problem->getQuality() << "\n";
+	std::cout << "Constr: " << problem->ConstraintsSatisfied() << "\n"; 
 
-	int f = 0;
-	double tq = 0;
-
-	for (int i = 0; i < 1; i++) {
-		CMscnProblem *problem = new CMscnProblem(2,3,4,6);
-
-		//problem->getInfoFromFile(f);
-		problem->generateInstance(5);
-		problem->printValues();
-
-		problem->generateSolution(0);
-		problem->makeSolution();
-		problem->printSolution();
-		double fq = problem->getQuality();
-		tq = problem->getQuality();
-		std::cout << "\nQuality Before: " << problem->getQuality() << "\n";
-		std::cout << "Constraints Before: " << problem->ConstraintsSatisfied() << "\n";
-		CRandomSearch search(problem);
-		
-		search.searchByTriesSolution(1000000);
-		std::cout << "Quality Solution: " << problem->getQuality() << "\n";
-		std::cout << "Constraints: " << problem->ConstraintsSatisfied() << "\n";
-		search.searchByTriesRandomCount(1000000);
-		std::cout << "Quality RandomCount: " << problem->getQuality() << "\n";
-		std::cout << "Constraints: " << problem->ConstraintsSatisfied() << "\n";
-		search.searchByTriesOneValue(1000000);
-		std::cout << "Quality Single: " << problem->getQuality() << "\n";
-		std::cout << "Constraints: " << problem->ConstraintsSatisfied() << "\n";
-
-		tq = problem->getQuality();
-
-		std::cout << "Solution: ";
-		problem->printSolution();
-	}
-	//std::cout << "Best solution: " << q;
 }
-
 /*
 
 DANE:
@@ -82,4 +63,7 @@ xd<macierz[d*f]> - ilosc towaru wysylana od dostawcy d do fabryki f
 xf<macierz[f*m]> - ilosc towaru wysylana z fabryki f do magazynu m
 xm<macierz[m*s]> - ilosc towaru wysylana z magazynu m do sklepu s
 
-*//**/
+*/
+/*
+
+*/

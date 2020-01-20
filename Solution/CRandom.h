@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <iostream>
-#include <random>
 
 
 class CRandom

@@ -152,8 +152,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Array.h" />
+    <ClInclude Include="CDiffEvol.h" />
     <ClInclude Include="CMscnProblem.h" />
     <ClInclude Include="CMscnValuesBondariesh.h" />
+    <ClInclude Include="COptimizer.h" />
+    <ClInclude Include="CProblem.h" />
     <ClInclude Include="CRandom.h" />
     <ClInclude Include="CRandomSearch.h" />
     <ClInclude Include="ErrorCodes.h" />
@@ -162,6 +165,7 @@
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CDiffEvol.cpp" />
     <ClCompile Include="CMscnProblem.cpp" />
     <ClCompile Include="CRandomSearch.cpp" />
     <ClCompile Include="pch.cpp">

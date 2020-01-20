@@ -3,39 +3,28 @@
 #include "Timer.h"
 #include "Array.h"
 #include "CRandom.h"
-class CRandomSearch
+#include "COptimizer.h"
+class CRandomSearch:public COptimizer
 {
 public:
 	CRandomSearch();
-	CRandomSearch(CMscnProblem* problem);
+	CRandomSearch(CProblem* problem, int timeInSeconds);
 	~CRandomSearch() { delete problem; }
-	//losuje tylko pojedyncze wartosci z solution
-	void searchByTimeOneValue(int timeInSeconds);
-	void searchByTriesOneValue(int tries);
-	void searchByImprovedTriesOneValue(int tries);
-
-
-	//Losuje losowa ilosc liczb ktore maja zostac wygenerowane losowo
-	void searchByTimeRandomCount(int timeInSeconds);
-	void searchByTriesRandomCount(int tries);
-	void searchByImprovedTriesRandomCount(int tries);
 	
 	//losuje cale solution losowe
-	void searchByTimeSolution(int timeInSeconds);
-	void searchByTriesSolution(int tries);
-	void searchByImprovedTriesSolution(int tries);
+	double* simulate();
 
 private:
 
-	bool oneValueSearch();
-	bool findRandomCountValues();
 	bool findNewSolution();
+
+	double* generateSolution(int range);
 
 	void getNewValue(int &newIndex, double& newValue);
 
-	CMscnProblem *problem;
+	CProblem *problem;
 	CRandom random;
-
+	double time;
 	int errorFlag = 0;
 };
 
